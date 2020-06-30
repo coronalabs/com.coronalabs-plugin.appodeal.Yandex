@@ -1,0 +1,4 @@
+
+dependencies {
+    implementation("com.appodeal.ads.sdk.networks:yandex:2.6.4.3")
+}
