@@ -3,8 +3,8 @@ local metadata =
 	plugin =
 	{
 		format = 'staticLibrary',
-		staticLibs = { 'APDYandexAdapter', },
-		frameworks = { 'YandexMobileAds', 'YandexMobileMetrica', 'YandexMobileMetricaCrashes', },
+		staticLibs = { 'APDYandexAdapter', 'YandexMobileMetrica', 'YandexMobileMetricaCrashes' },
+		frameworks = { 'YandexMobileAds', },
 		frameworksOptional = {},
 	},
 }

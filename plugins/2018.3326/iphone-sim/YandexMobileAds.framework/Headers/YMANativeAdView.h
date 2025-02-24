@@ -1,10 +1,4 @@
-/*
- * Version for iOS © 2015–2021 YANDEX
- *
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at https://yandex.com/legal/mobileads_sdk_agreement/
- */
-
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 @protocol YMANativeAd;
@@ -54,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) IBOutlet UIImageView *iconImageView;
 
 /**
- `YMANativeMediaView` for the ad's media.
+ `NativeMediaView` for the ad's media.
  */
 @property (nonatomic, strong, nullable) IBOutlet YMANativeMediaView *mediaView;
 
@@ -64,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) IBOutlet UILabel *priceLabel;
 
 /**
- `UIView` that implements the YMARating protocol for data on the app rating.
+ `UIView` that implements the `Rating` protocol for data on the app rating.
  */
 @property (nonatomic, strong, nullable) IBOutlet UIView<YMARating> *ratingView;
 
@@ -96,3 +90,4 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
