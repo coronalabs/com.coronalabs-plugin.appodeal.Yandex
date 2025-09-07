@@ -1,2 +1,0 @@
-YandexMob filter=lfs diff=lfs merge=lfs -text
-YandexMobileAds filter=lfs diff=lfs merge=lfs -text

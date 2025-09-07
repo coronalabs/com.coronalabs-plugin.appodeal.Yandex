@@ -1,0 +1,11 @@
+framework module AppMetricaSynchronization {
+  umbrella header "AppMetricaSynchronization-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module AppMetricaSynchronization.Swift {
+  header "AppMetricaSynchronization-Swift.h"
+  requires objc
+}

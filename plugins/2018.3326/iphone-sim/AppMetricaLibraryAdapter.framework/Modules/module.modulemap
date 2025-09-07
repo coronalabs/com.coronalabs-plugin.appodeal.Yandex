@@ -1,0 +1,11 @@
+framework module AppMetricaLibraryAdapter {
+  umbrella header "AppMetricaLibraryAdapter-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module AppMetricaLibraryAdapter.Swift {
+  header "AppMetricaLibraryAdapter-Swift.h"
+  requires objc
+}

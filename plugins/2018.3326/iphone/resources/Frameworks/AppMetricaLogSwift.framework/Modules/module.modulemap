@@ -1,0 +1,11 @@
+framework module AppMetricaLogSwift {
+  umbrella header "AppMetricaLogSwift-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module AppMetricaLogSwift.Swift {
+  header "AppMetricaLogSwift-Swift.h"
+  requires objc
+}

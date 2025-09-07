@@ -329,7 +329,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, YMAAdErrorCode, "AdErrorCode", open) {
   YMAAdErrorCodeAdHasAlreadyBeenPresented = 8,
 /// ViewController passed for presenting full-screen ad is nil.
   YMAAdErrorCodeNilPresentingViewController = 9,
-/// Incorrect fullscrseen view.
+/// Incorrect fullscreen view.
   YMAAdErrorCodeIncorrectFullscreenView = 10,
 /// Invalid sdk configuration.
   YMAAdErrorCodeInvalidSDKConfiguration = 11,
@@ -450,6 +450,23 @@ SWIFT_CLASS_NAMED("AdSize")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_CLASS_NAMED("AdTargetInfo")
+@interface YMAAdTargetInfo : NSObject
+/// User age.
+@property (nonatomic, strong) NSNumber * _Nullable age;
+/// The gender of the user. For a list of values, see the Gender section.
+@property (nonatomic, copy) NSString * _Nullable gender;
+/// User location.
+@property (nonatomic, strong) CLLocation * _Nullable location;
+/// The search query that the user entered in the app.
+@property (nonatomic, copy) NSString * _Nullable contextQuery;
+/// List of tags. Matches the context in which the ad will be displayed.
+@property (nonatomic, copy) NSArray<NSString *> * _Nullable contextTags;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 /// Ad theme.
 typedef SWIFT_ENUM_NAMED(NSInteger, YMAAdTheme, "AdTheme", open) {
 /// Unspecified ad theme (same as device theme).
@@ -472,6 +489,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, YMAAdType, "AdType", open) {
   YMAAdTypeNative = 3,
 /// The type of ad is app open.
   YMAAdTypeAppOpenAd = 4,
+/// The type of ad is retail media.
+  YMAAdTypeRetailMedia = 5,
 };
 
 @class YMAVideoController;
@@ -492,7 +511,7 @@ SWIFT_CLASS_NAMED("AdView")
 /// This property is only used for working with ADFOX.
 @property (nonatomic, readonly, copy) NSString * _Nullable info;
 /// VideoController provides playback control for ad video.
-@property (nonatomic, readonly, strong) YMAVideoController * _Nonnull videoController;
+@property (nonatomic, readonly, strong) YMAVideoController * _Nonnull videoController SWIFT_DEPRECATED_MSG("`videoController` property will be removed in future versions.");
 /// It monitors the ad and receives notifications about user interaction with the ad.
 /// remark:
 /// It provides data necessary for displaying the ad
@@ -508,7 +527,7 @@ SWIFT_CLASS_NAMED("AdView")
 ///
 /// returns:
 /// Initializes an object of the <code>AdView</code> class to display the banner with the specified size.
-- (nonnull instancetype)initWithAdUnitID:(NSString * _Nonnull)adUnitID adSize:(YMABannerAdSize * _Nonnull)adSize OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAdUnitID:(NSString * _Nonnull)adUnitID adSize:(YMABannerAdSize * _Nonnull)adSize;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
 /// Displays the banner centered at the top of the passed <code>View</code>.
 /// \param view Object of the <code>UIView</code> class to add the banner to.
@@ -788,6 +807,8 @@ SWIFT_CLASS_NAMED("BidderTokenRequestConfiguration")
 @interface YMABidderTokenRequestConfiguration : NSObject
 /// A type of ad.
 @property (nonatomic, readonly) enum YMAAdType adType;
+/// A target information about user.
+@property (nonatomic, readonly, strong) YMAAdTargetInfo * _Nonnull targetInfo;
 /// A size of the banner if the type of ad is a banner.
 @property (nonatomic, strong) YMABannerAdSize * _Nullable bannerAdSize;
 /// A set of arbitrary input parameters.
@@ -798,7 +819,7 @@ SWIFT_CLASS_NAMED("BidderTokenRequestConfiguration")
 ///
 /// returns:
 /// An object of the BidderTokenRequestConfiguration class, configuration for generating bidder token.
-- (nonnull instancetype)initWithAdType:(enum YMAAdType)adType;
+- (nonnull instancetype)initWithAdType:(enum YMAAdType)adType OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -898,6 +919,13 @@ SWIFT_CLASS_NAMED("ButtonAppearance")
 + (nonnull instancetype)appearanceWithTextAppearance:(YMALabelAppearance * _Nonnull)textAppearance highlightedTextColor:(UIColor * _Nonnull)highlightedTextColor normalColor:(UIColor * _Nonnull)normalColor highlightedColor:(UIColor * _Nonnull)highlightedColor borderColor:(UIColor * _Nonnull)borderColor borderWidth:(CGFloat)borderWidth SWIFT_WARN_UNUSED_RESULT;
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("copy(with:) is deprecated. Will be removed in future versions.");
 - (id _Nonnull)mutableCopyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("mutableCopy(with:) is deprecated. Use `mutableAppearance` property instead.");
+@end
+
+
+SWIFT_CLASS("_TtC15YandexMobileAds15CustomMediaView")
+@interface CustomMediaView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -1136,12 +1164,13 @@ SWIFT_CLASS_NAMED("MobileAds")
 
 
 
-
-
 @interface YMAMobileAds (SWIFT_EXTENSION(YandexMobileAds))
 + (void)useVerificatorForUITests;
-+ (void)blockAdWithReason:(NSString * _Nonnull)reason;
++ (void)blockAdWithReasonWithBlockReason:(NSString * _Nonnull)blockReason reportReason:(NSString * _Nonnull)reportReason;
 @end
+
+
+
 
 
 
@@ -1636,7 +1665,7 @@ SWIFT_CLASS_NAMED("MutableSizeConstraint")
 
 
 @interface NSError (SWIFT_EXTENSION(YandexMobileAds))
-/// . Is Yandex Mobile Native Ads error
+/// Is Yandex Mobile Native Ads error
 @property (nonatomic, readonly) BOOL isYandexMobileNativeAdsError;
 @end
 
@@ -1700,7 +1729,7 @@ SWIFT_PROTOCOL_NAMED("NativeAd")
 /// returns:
 /// <code>true</code> if binding succeeded, otherwise <code>false</code>.
 - (BOOL)bindAdToView:(UIView * _Nonnull)view viewData:(YMANativeAdViewData * _Nonnull)viewData error:(NSError * _Nullable * _Nullable)error;
-/// Configures views for native ads displlay in slider.
+/// Configures views for native ads display in slider.
 /// \param sliderView Root slider ad view with general assets
 ///
 /// \param error Binding error. - seealso: <code>NativeAdErrorCode</code> for error codes.
@@ -1800,6 +1829,7 @@ SWIFT_PROTOCOL_NAMED("NativeAdDelegate")
 
 @class UIImage;
 
+/// This class describes an image as a native ad asset.
 /// remark:
 /// The image sizes are always available, but the images themselves are only available after loading.
 SWIFT_CLASS_NAMED("NativeAdImage")
@@ -2086,6 +2116,15 @@ SWIFT_PROTOCOL_NAMED("Rating")
 
 
 
+SWIFT_CLASS("_TtC15YandexMobileAds17RetailMediaAdView")
+@interface RetailMediaAdView : UIView
+- (nonnull instancetype)init;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE;
+- (void)observeValueForKeyPath:(NSString * _Nullable)keyPath ofObject:(id _Nullable)object change:(NSDictionary<NSKeyValueChangeKey, id> * _Nullable)change context:(void * _Nullable)context;
+@end
+
+
 /// <code>Reward</code> represents reward given to the user.
 SWIFT_PROTOCOL_NAMED("Reward")
 @protocol YMAReward <NSObject>
@@ -2218,15 +2257,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) YMAVersion *
 @protocol YMAVideoDelegate;
 
 /// <code>VideoController</code> manages video content of the ad.
-SWIFT_CLASS_NAMED("VideoController")
+SWIFT_CLASS_NAMED("VideoController") SWIFT_DEPRECATED_MSG("VideoController will be removed in future versions.")
 @interface YMAVideoController : NSObject
 /// Delegate is notified about video playback events.
 @property (nonatomic, weak) id <YMAVideoDelegate> _Nullable delegate;
-- (nonnull instancetype)init;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
-SWIFT_PROTOCOL_NAMED("VideoDelegate")
+SWIFT_PROTOCOL_NAMED("VideoDelegate") SWIFT_DEPRECATED_MSG("VideoDelegate will be removed in future versions.")
 @protocol YMAVideoDelegate <NSObject>
 @optional
 /// Notifies delegate when video finished playing.
@@ -2574,7 +2613,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, YMAAdErrorCode, "AdErrorCode", open) {
   YMAAdErrorCodeAdHasAlreadyBeenPresented = 8,
 /// ViewController passed for presenting full-screen ad is nil.
   YMAAdErrorCodeNilPresentingViewController = 9,
-/// Incorrect fullscrseen view.
+/// Incorrect fullscreen view.
   YMAAdErrorCodeIncorrectFullscreenView = 10,
 /// Invalid sdk configuration.
   YMAAdErrorCodeInvalidSDKConfiguration = 11,
@@ -2695,6 +2734,23 @@ SWIFT_CLASS_NAMED("AdSize")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_CLASS_NAMED("AdTargetInfo")
+@interface YMAAdTargetInfo : NSObject
+/// User age.
+@property (nonatomic, strong) NSNumber * _Nullable age;
+/// The gender of the user. For a list of values, see the Gender section.
+@property (nonatomic, copy) NSString * _Nullable gender;
+/// User location.
+@property (nonatomic, strong) CLLocation * _Nullable location;
+/// The search query that the user entered in the app.
+@property (nonatomic, copy) NSString * _Nullable contextQuery;
+/// List of tags. Matches the context in which the ad will be displayed.
+@property (nonatomic, copy) NSArray<NSString *> * _Nullable contextTags;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 /// Ad theme.
 typedef SWIFT_ENUM_NAMED(NSInteger, YMAAdTheme, "AdTheme", open) {
 /// Unspecified ad theme (same as device theme).
@@ -2717,6 +2773,8 @@ typedef SWIFT_ENUM_NAMED(NSInteger, YMAAdType, "AdType", open) {
   YMAAdTypeNative = 3,
 /// The type of ad is app open.
   YMAAdTypeAppOpenAd = 4,
+/// The type of ad is retail media.
+  YMAAdTypeRetailMedia = 5,
 };
 
 @class YMAVideoController;
@@ -2737,7 +2795,7 @@ SWIFT_CLASS_NAMED("AdView")
 /// This property is only used for working with ADFOX.
 @property (nonatomic, readonly, copy) NSString * _Nullable info;
 /// VideoController provides playback control for ad video.
-@property (nonatomic, readonly, strong) YMAVideoController * _Nonnull videoController;
+@property (nonatomic, readonly, strong) YMAVideoController * _Nonnull videoController SWIFT_DEPRECATED_MSG("`videoController` property will be removed in future versions.");
 /// It monitors the ad and receives notifications about user interaction with the ad.
 /// remark:
 /// It provides data necessary for displaying the ad
@@ -2753,7 +2811,7 @@ SWIFT_CLASS_NAMED("AdView")
 ///
 /// returns:
 /// Initializes an object of the <code>AdView</code> class to display the banner with the specified size.
-- (nonnull instancetype)initWithAdUnitID:(NSString * _Nonnull)adUnitID adSize:(YMABannerAdSize * _Nonnull)adSize OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAdUnitID:(NSString * _Nonnull)adUnitID adSize:(YMABannerAdSize * _Nonnull)adSize;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
 /// Displays the banner centered at the top of the passed <code>View</code>.
 /// \param view Object of the <code>UIView</code> class to add the banner to.
@@ -3033,6 +3091,8 @@ SWIFT_CLASS_NAMED("BidderTokenRequestConfiguration")
 @interface YMABidderTokenRequestConfiguration : NSObject
 /// A type of ad.
 @property (nonatomic, readonly) enum YMAAdType adType;
+/// A target information about user.
+@property (nonatomic, readonly, strong) YMAAdTargetInfo * _Nonnull targetInfo;
 /// A size of the banner if the type of ad is a banner.
 @property (nonatomic, strong) YMABannerAdSize * _Nullable bannerAdSize;
 /// A set of arbitrary input parameters.
@@ -3043,7 +3103,7 @@ SWIFT_CLASS_NAMED("BidderTokenRequestConfiguration")
 ///
 /// returns:
 /// An object of the BidderTokenRequestConfiguration class, configuration for generating bidder token.
-- (nonnull instancetype)initWithAdType:(enum YMAAdType)adType;
+- (nonnull instancetype)initWithAdType:(enum YMAAdType)adType OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3143,6 +3203,13 @@ SWIFT_CLASS_NAMED("ButtonAppearance")
 + (nonnull instancetype)appearanceWithTextAppearance:(YMALabelAppearance * _Nonnull)textAppearance highlightedTextColor:(UIColor * _Nonnull)highlightedTextColor normalColor:(UIColor * _Nonnull)normalColor highlightedColor:(UIColor * _Nonnull)highlightedColor borderColor:(UIColor * _Nonnull)borderColor borderWidth:(CGFloat)borderWidth SWIFT_WARN_UNUSED_RESULT;
 - (id _Nonnull)copyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("copy(with:) is deprecated. Will be removed in future versions.");
 - (id _Nonnull)mutableCopyWithZone:(struct _NSZone * _Nullable)zone SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("mutableCopy(with:) is deprecated. Use `mutableAppearance` property instead.");
+@end
+
+
+SWIFT_CLASS("_TtC15YandexMobileAds15CustomMediaView")
+@interface CustomMediaView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -3381,12 +3448,13 @@ SWIFT_CLASS_NAMED("MobileAds")
 
 
 
-
-
 @interface YMAMobileAds (SWIFT_EXTENSION(YandexMobileAds))
 + (void)useVerificatorForUITests;
-+ (void)blockAdWithReason:(NSString * _Nonnull)reason;
++ (void)blockAdWithReasonWithBlockReason:(NSString * _Nonnull)blockReason reportReason:(NSString * _Nonnull)reportReason;
 @end
+
+
+
 
 
 
@@ -3881,7 +3949,7 @@ SWIFT_CLASS_NAMED("MutableSizeConstraint")
 
 
 @interface NSError (SWIFT_EXTENSION(YandexMobileAds))
-/// . Is Yandex Mobile Native Ads error
+/// Is Yandex Mobile Native Ads error
 @property (nonatomic, readonly) BOOL isYandexMobileNativeAdsError;
 @end
 
@@ -3945,7 +4013,7 @@ SWIFT_PROTOCOL_NAMED("NativeAd")
 /// returns:
 /// <code>true</code> if binding succeeded, otherwise <code>false</code>.
 - (BOOL)bindAdToView:(UIView * _Nonnull)view viewData:(YMANativeAdViewData * _Nonnull)viewData error:(NSError * _Nullable * _Nullable)error;
-/// Configures views for native ads displlay in slider.
+/// Configures views for native ads display in slider.
 /// \param sliderView Root slider ad view with general assets
 ///
 /// \param error Binding error. - seealso: <code>NativeAdErrorCode</code> for error codes.
@@ -4045,6 +4113,7 @@ SWIFT_PROTOCOL_NAMED("NativeAdDelegate")
 
 @class UIImage;
 
+/// This class describes an image as a native ad asset.
 /// remark:
 /// The image sizes are always available, but the images themselves are only available after loading.
 SWIFT_CLASS_NAMED("NativeAdImage")
@@ -4331,6 +4400,15 @@ SWIFT_PROTOCOL_NAMED("Rating")
 
 
 
+SWIFT_CLASS("_TtC15YandexMobileAds17RetailMediaAdView")
+@interface RetailMediaAdView : UIView
+- (nonnull instancetype)init;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE;
+- (void)observeValueForKeyPath:(NSString * _Nullable)keyPath ofObject:(id _Nullable)object change:(NSDictionary<NSKeyValueChangeKey, id> * _Nullable)change context:(void * _Nullable)context;
+@end
+
+
 /// <code>Reward</code> represents reward given to the user.
 SWIFT_PROTOCOL_NAMED("Reward")
 @protocol YMAReward <NSObject>
@@ -4463,15 +4541,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) YMAVersion *
 @protocol YMAVideoDelegate;
 
 /// <code>VideoController</code> manages video content of the ad.
-SWIFT_CLASS_NAMED("VideoController")
+SWIFT_CLASS_NAMED("VideoController") SWIFT_DEPRECATED_MSG("VideoController will be removed in future versions.")
 @interface YMAVideoController : NSObject
 /// Delegate is notified about video playback events.
 @property (nonatomic, weak) id <YMAVideoDelegate> _Nullable delegate;
-- (nonnull instancetype)init;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
-SWIFT_PROTOCOL_NAMED("VideoDelegate")
+SWIFT_PROTOCOL_NAMED("VideoDelegate") SWIFT_DEPRECATED_MSG("VideoDelegate will be removed in future versions.")
 @protocol YMAVideoDelegate <NSObject>
 @optional
 /// Notifies delegate when video finished playing.
