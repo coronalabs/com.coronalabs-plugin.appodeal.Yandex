@@ -1,0 +1,117 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name DivKitBinaryCompatibilityFacade
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+@_exported import DivKitBinaryCompatibilityFacade
+import Foundation
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public protocol ContentViewFactory {
+  func makeView(id: Swift.String, data: [Swift.String : Any]) -> UIKit.UIView
+}
+public protocol FacadeView : UIKit.UIView {
+  func setVariables(_ variables: [Swift.String : Any])
+}
+public enum DivKitFacade {
+  public static func createView(json: [Swift.String : Any], localImageProvider: (any DivKitBinaryCompatibilityFacade.LocalImageProviding)? = nil, fontProvider: (any DivKitBinaryCompatibilityFacade.FontProviding)? = nil, customViewFactory: (any DivKitBinaryCompatibilityFacade.ContentViewFactory)? = nil, wrapperConfigurators: [any DivKitBinaryCompatibilityFacade.WrapperViewConfigurator] = [], urlHandler: any DivKitBinaryCompatibilityFacade.UrlHandling) async -> (any DivKitBinaryCompatibilityFacade.FacadeView)?
+}
+@_hasMissingDesignatedInitializers public class DivProperties {
+  public enum AlignmentHorizontal {
+    case left
+    case center
+    case right
+    case start
+    case end
+    public static func == (a: DivKitBinaryCompatibilityFacade.DivProperties.AlignmentHorizontal, b: DivKitBinaryCompatibilityFacade.DivProperties.AlignmentHorizontal) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum AlignmentVertical {
+    case top
+    case center
+    case bottom
+    case baseline
+    public static func == (a: DivKitBinaryCompatibilityFacade.DivProperties.AlignmentVertical, b: DivKitBinaryCompatibilityFacade.DivProperties.AlignmentVertical) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  @_hasMissingDesignatedInitializers public class TextProperties {
+    public enum FontWeight {
+      case light
+      case medium
+      case regular
+      case bold
+      public static func == (a: DivKitBinaryCompatibilityFacade.DivProperties.TextProperties.FontWeight, b: DivKitBinaryCompatibilityFacade.DivProperties.TextProperties.FontWeight) -> Swift.Bool
+      public func hash(into hasher: inout Swift.Hasher)
+      public var hashValue: Swift.Int {
+        get
+      }
+    }
+    final public let fontSize: Swift.Int
+    final public let lineHeight: Swift.Int?
+    final public let fontFamily: Swift.String?
+    final public let fontWeight: DivKitBinaryCompatibilityFacade.DivProperties.TextProperties.FontWeight
+    final public let textColor: UIKit.UIColor
+    final public let textAlignmentHorizonal: DivKitBinaryCompatibilityFacade.DivProperties.AlignmentHorizontal
+    final public let textAlignmentVertical: DivKitBinaryCompatibilityFacade.DivProperties.AlignmentVertical
+    @objc deinit
+  }
+  final public let id: Swift.String?
+  final public let textProperties: DivKitBinaryCompatibilityFacade.DivProperties.TextProperties?
+  @objc deinit
+}
+extension DivKitBinaryCompatibilityFacade.DivProperties : Swift.Equatable {
+  public static func == (lhs: DivKitBinaryCompatibilityFacade.DivProperties, rhs: DivKitBinaryCompatibilityFacade.DivProperties) -> Swift.Bool
+}
+extension DivKitBinaryCompatibilityFacade.DivProperties.TextProperties : Swift.Equatable {
+  public static func == (lhs: DivKitBinaryCompatibilityFacade.DivProperties.TextProperties, rhs: DivKitBinaryCompatibilityFacade.DivProperties.TextProperties) -> Swift.Bool
+}
+public enum FontWeight : Swift.String, Swift.CaseIterable {
+  case light
+  case medium
+  case regular
+  case bold
+  public init?(rawValue: Swift.String)
+  public typealias AllCases = [DivKitBinaryCompatibilityFacade.FontWeight]
+  public typealias RawValue = Swift.String
+  nonisolated public static var allCases: [DivKitBinaryCompatibilityFacade.FontWeight] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol FontProviding {
+  func font(family: Swift.String, weight: DivKitBinaryCompatibilityFacade.FontWeight, size: CoreFoundation.CGFloat) -> UIKit.UIFont
+}
+public protocol LocalImageProviding {
+  func localImage(for url: Foundation.URL) -> UIKit.UIImage?
+}
+public protocol UrlHandling {
+  func handle(url: Foundation.URL, payload: [Swift.String : Any]?)
+}
+public protocol DivKitFacadeWrapperView : UIKit.UIView {
+  func injectChildView(_ view: UIKit.UIView)
+}
+public protocol WrapperViewConfigurator {
+  associatedtype T : DivKitBinaryCompatibilityFacade.DivKitFacadeWrapperView
+  var id: Swift.String { get }
+  var applyAfterDecorations: Swift.Bool { get }
+  func configure(view: Self.T, parameters: [Swift.String : Any], properties: DivKitBinaryCompatibilityFacade.DivProperties)
+}
+extension DivKitBinaryCompatibilityFacade.DivProperties.AlignmentHorizontal : Swift.Equatable {}
+extension DivKitBinaryCompatibilityFacade.DivProperties.AlignmentHorizontal : Swift.Hashable {}
+extension DivKitBinaryCompatibilityFacade.DivProperties.AlignmentVertical : Swift.Equatable {}
+extension DivKitBinaryCompatibilityFacade.DivProperties.AlignmentVertical : Swift.Hashable {}
+extension DivKitBinaryCompatibilityFacade.DivProperties.TextProperties.FontWeight : Swift.Equatable {}
+extension DivKitBinaryCompatibilityFacade.DivProperties.TextProperties.FontWeight : Swift.Hashable {}
+extension DivKitBinaryCompatibilityFacade.FontWeight : Swift.Equatable {}
+extension DivKitBinaryCompatibilityFacade.FontWeight : Swift.Hashable {}
+extension DivKitBinaryCompatibilityFacade.FontWeight : Swift.RawRepresentable {}

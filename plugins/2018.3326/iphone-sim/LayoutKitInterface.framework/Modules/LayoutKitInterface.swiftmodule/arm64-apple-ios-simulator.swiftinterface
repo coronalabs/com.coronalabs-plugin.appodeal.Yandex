@@ -1,0 +1,198 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name LayoutKitInterface
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import Foundation
+@_exported import LayoutKitInterface
+import Swift
+import VGSL
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+final public class ActionsAttribute {
+  public static let Key: Foundation.NSAttributedString.Key
+  final public let actions: [LayoutKitInterface.UserInterfaceAction]
+  public init(actions: [LayoutKitInterface.UserInterfaceAction])
+  final public func apply(to str: CoreFoundation.CFMutableAttributedString, at range: CoreFoundation.CFRange)
+  @objc deinit
+}
+@frozen public enum CommonHandler {
+  case action(LayoutKitInterface.UserInterfaceAction)
+  case block(VGSLFundamentals.Action)
+}
+extension LayoutKitInterface.CommonHandler : Swift.Equatable {
+  public static func == (lhs: LayoutKitInterface.CommonHandler, rhs: LayoutKitInterface.CommonHandler) -> Swift.Bool
+}
+public struct Menu : Swift.Equatable, Swift.Codable {
+  public struct Item : Swift.Equatable, Swift.Codable {
+    public let actions: [LayoutKitInterface.UserInterfaceAction]
+    public let text: Swift.String
+    public init(actions: [LayoutKitInterface.UserInterfaceAction], text: Swift.String)
+    public init(action: LayoutKitInterface.UserInterfaceAction, text: Swift.String)
+    public static func == (a: LayoutKitInterface.Menu.Item, b: LayoutKitInterface.Menu.Item) -> Swift.Bool
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public let items: [LayoutKitInterface.Menu.Item]
+  public init?(items: [LayoutKitInterface.Menu.Item])
+  public static func == (a: LayoutKitInterface.Menu, b: LayoutKitInterface.Menu) -> Swift.Bool
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension LayoutKitInterface.Menu.Item : Swift.CustomDebugStringConvertible {
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension LayoutKitInterface.Menu : Swift.CustomDebugStringConvertible {
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+public struct UIElementPath : Swift.CustomStringConvertible, Swift.ExpressibleByStringLiteral, Swift.Codable {
+  public init(_ root: Swift.String)
+  public init(parent: LayoutKitInterface.UIElementPath, child: Swift.String)
+  public init(stringLiteral value: Swift.StringLiteralType)
+  public var description: Swift.String {
+    get
+  }
+  public var parent: LayoutKitInterface.UIElementPath? {
+    get
+  }
+  public var root: Swift.String {
+    get
+  }
+  public var leaf: Swift.String {
+    get
+  }
+  public func starts(with path: LayoutKitInterface.UIElementPath) -> Swift.Bool
+  public static func parse(_ path: Swift.String) -> LayoutKitInterface.UIElementPath
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.StringLiteralType
+  public typealias StringLiteralType = Swift.StringLiteralType
+  public typealias UnicodeScalarLiteralType = Swift.StringLiteralType
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension LayoutKitInterface.UIElementPath : Swift.Hashable {
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: LayoutKitInterface.UIElementPath, b: LayoutKitInterface.UIElementPath) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension LayoutKitInterface.UIElementPath {
+  public static func + (parent: LayoutKitInterface.UIElementPath, child: Swift.String) -> LayoutKitInterface.UIElementPath
+  public static func + (parent: LayoutKitInterface.UIElementPath, child: Swift.Int) -> LayoutKitInterface.UIElementPath
+  public static func + (parent: LayoutKitInterface.UIElementPath, child: [Swift.String]) -> LayoutKitInterface.UIElementPath
+  public static func += (path: inout LayoutKitInterface.UIElementPath, child: Swift.String)
+  public static func += (path: inout LayoutKitInterface.UIElementPath, child: Swift.Int)
+}
+#if compiler(>=5.3) && $NoncopyableGenerics
+extension Swift.Optional where Wrapped == LayoutKitInterface.UIElementPath {
+  public static func + (parent: Swift.Optional<Wrapped>, child: Swift.String) -> LayoutKitInterface.UIElementPath
+}
+#else
+extension Swift.Optional where Wrapped == LayoutKitInterface.UIElementPath {
+  public static func + (parent: Swift.Optional<Wrapped>, child: Swift.String) -> LayoutKitInterface.UIElementPath
+}
+#endif
+extension LayoutKitInterface.UIElementPath {
+  public typealias ItemIndex = VGSLFundamentals.Tagged<LayoutKitInterface.UIElementPath, Swift.Int>
+  public func withItem(at index: LayoutKitInterface.UIElementPath.ItemIndex) -> LayoutKitInterface.UIElementPath
+  public var itemIndex: LayoutKitInterface.UIElementPath.ItemIndex? {
+    get
+  }
+}
+public struct UserInterfaceAction : Swift.Equatable, Swift.Codable {
+  @frozen public enum Payload : Swift.Equatable {
+    case empty
+    case url(Foundation.URL)
+    case menu(LayoutKitInterface.Menu)
+    case divAction(params: LayoutKitInterface.UserInterfaceAction.DivActionParams)
+    public static func == (a: LayoutKitInterface.UserInterfaceAction.Payload, b: LayoutKitInterface.UserInterfaceAction.Payload) -> Swift.Bool
+  }
+  public struct DivActionParams : Swift.Equatable {
+    public let action: VGSLFundamentals.JSONObject
+    public let path: LayoutKitInterface.UIElementPath
+    public let source: LayoutKitInterface.UserInterfaceAction.DivActionSource
+    public let url: Foundation.URL?
+    public let localValues: [Swift.String : Swift.AnyHashable]
+    public var cardId: Swift.String {
+      get
+    }
+    public init(action: VGSLFundamentals.JSONObject, path: LayoutKitInterface.UIElementPath, source: LayoutKitInterface.UserInterfaceAction.DivActionSource, url: Foundation.URL?, localValues: [Swift.String : Swift.AnyHashable] = [:])
+    public static func == (a: LayoutKitInterface.UserInterfaceAction.DivActionParams, b: LayoutKitInterface.UserInterfaceAction.DivActionParams) -> Swift.Bool
+  }
+  @frozen public enum DivActionSource : Swift.String {
+    case tap
+    case visibility
+    case disappear
+    case timer
+    case trigger
+    case callback
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public let payload: LayoutKitInterface.UserInterfaceAction.Payload
+  public let path: LayoutKitInterface.UIElementPath
+  public let accessibilityElement: VGSLUI.AccessibilityElement?
+  public var url: Foundation.URL? {
+    get
+  }
+  public init(payload: LayoutKitInterface.UserInterfaceAction.Payload, path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement?)
+  public init(payload: LayoutKitInterface.UserInterfaceAction.Payload, path: LayoutKitInterface.UIElementPath)
+  public init(url: Foundation.URL, path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement? = nil)
+  public init(menu: LayoutKitInterface.Menu, path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement? = nil)
+  public init(path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement? = nil)
+  public static func == (a: LayoutKitInterface.UserInterfaceAction, b: LayoutKitInterface.UserInterfaceAction) -> Swift.Bool
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension LayoutKitInterface.UserInterfaceAction.Payload : Swift.Codable {
+  public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+}
+extension LayoutKitInterface.UserInterfaceAction.Payload : Swift.CustomDebugStringConvertible {
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+#if compiler(>=5.3) && $NoncopyableGenerics
+extension Swift.Optional where Wrapped == Foundation.URL {
+  public func action(with path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement? = nil) -> LayoutKitInterface.UserInterfaceAction?
+}
+#else
+extension Swift.Optional where Wrapped == Foundation.URL {
+  public func action(with path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement? = nil) -> LayoutKitInterface.UserInterfaceAction?
+}
+#endif
+extension Foundation.URL {
+  public func action(with path: LayoutKitInterface.UIElementPath, accessibilityElement: VGSLUI.AccessibilityElement? = nil) -> LayoutKitInterface.UserInterfaceAction
+}
+extension LayoutKitInterface.UserInterfaceAction.Payload {
+  public enum Error : Swift.Error {
+    case notAnURL
+    public static func == (a: LayoutKitInterface.UserInterfaceAction.Payload.Error, b: LayoutKitInterface.UserInterfaceAction.Payload.Error) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public var url: Foundation.URL? {
+    get
+  }
+  public func getComposedURLs() throws -> [Foundation.URL]
+  public var divActionParams: LayoutKitInterface.UserInterfaceAction.DivActionParams? {
+    get
+  }
+}
+extension LayoutKitInterface.UserInterfaceAction.DivActionSource : Swift.Equatable {}
+extension LayoutKitInterface.UserInterfaceAction.DivActionSource : Swift.Hashable {}
+extension LayoutKitInterface.UserInterfaceAction.DivActionSource : Swift.RawRepresentable {}
+extension LayoutKitInterface.UserInterfaceAction.DivActionSource : Swift.Sendable {}
+extension LayoutKitInterface.UserInterfaceAction.DivActionSource : Swift.BitwiseCopyable {}
+extension LayoutKitInterface.UserInterfaceAction.Payload.Error : Swift.Equatable {}
+extension LayoutKitInterface.UserInterfaceAction.Payload.Error : Swift.Hashable {}

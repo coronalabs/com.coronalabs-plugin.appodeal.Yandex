@@ -1,0 +1,118 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name AppMetricaIdentifiers
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import AppMetricaCoreUtils
+@_exported import AppMetricaIdentifiers
+import AppMetricaKeychain
+import AppMetricaLogSwift
+import AppMetricaPlatform
+import AppMetricaStorageUtils
+import AppMetricaSynchronization
+import Foundation
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_inheritsConvenienceInitializers @objc(AMAAppMetricaIdentifiersKeys) @objcMembers final public class AppMetricaIdentifiersKeys : ObjectiveC.NSObject {
+  @objc final public class var deviceID: Swift.String {
+    @objc get
+  }
+  @objc final public class var deviceIDHash: Swift.String {
+    @objc get
+  }
+  @objc final public class var appMetricaUUID: Swift.String {
+    @objc get
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(AMAIdentifierProviding) public protocol IdentifierProviding : ObjectiveC.NSObjectProtocol {
+  @objc var deviceID: Swift.String? { get }
+  @objc var deviceIDHash: Swift.String? { get }
+  @objc var appMetricaUUID: Swift.String? { get }
+  @objc func updateDeviceID(_ deviceID: Swift.String)
+  @objc func updateDeviceIdHash(_ deviceHashID: Swift.String)
+  @objc func updateAppMetricaUUID(_ uuid: Swift.String?)
+}
+public let identifierErrorDomain: Swift.String
+@objc(AMAIdentifierProviderConfiguration) final public class IdentifierProviderConfiguration : ObjectiveC.NSObject {
+  @objc final public var privateKeychain: any AppMetricaKeychain.KeychainStoring
+  @objc final public var privateFileStorage: any AppMetricaStorageUtils.FileStorage
+  @objc final public var vendorKeychain: (any AppMetricaKeychain.KeychainStoring)?
+  @objc final public var groupKeychain: (any AppMetricaKeychain.KeychainStoring)?
+  @objc final public var groupFileStorage: (any AppMetricaStorageUtils.FileStorage)?
+  @objc final public var groupLockFilePath: Swift.String?
+  @objc final public var appDatabase: (any AppMetricaStorageUtils.KeyValueStoring)?
+  @objc public init(privateKeychain: any AppMetricaKeychain.KeychainStoring, privateFileStorage: any AppMetricaStorageUtils.FileStorage)
+  @objc deinit
+}
+@objc(AMAIdentifierProvider) final public class IdentifierProvider : ObjectiveC.NSObject, AppMetricaIdentifiers.IdentifierProviding {
+  @objc final public let config: AppMetricaIdentifiers.IdentifierProviderConfiguration
+  @objc public init(config: AppMetricaIdentifiers.IdentifierProviderConfiguration, env: AppMetricaPlatform.RunEnvironment)
+  final public var identifiers: AppMetricaIdentifiers.Identifiers {
+    get
+  }
+  @objc final public var deviceID: Swift.String? {
+    @objc get
+  }
+  @objc final public var deviceIDHash: Swift.String? {
+    @objc get
+  }
+  @objc final public var appMetricaUUID: Swift.String? {
+    @objc get
+  }
+  @objc final public func updateDeviceID(_ deviceID: Swift.String)
+  @objc final public func updateDeviceIdHash(_ newHash: Swift.String)
+  @objc final public func updateAppMetricaUUID(_ uuid: Swift.String?)
+  @objc deinit
+}
+public struct AppMetricaUUID : Swift.RawRepresentable, Swift.Hashable {
+  public var rawValue: Swift.String
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+}
+public struct DeviceID : Swift.RawRepresentable, Swift.Hashable {
+  public var rawValue: Swift.String
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+}
+public struct DeviceIDHash : Swift.RawRepresentable, Swift.Hashable {
+  public var rawValue: Swift.String
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+}
+public struct Identifiers : Swift.Equatable, Swift.Hashable {
+  public var deviceID: AppMetricaIdentifiers.DeviceID?
+  public var deviceHashID: AppMetricaIdentifiers.DeviceIDHash?
+  public var appMetricaUUID: AppMetricaIdentifiers.AppMetricaUUID
+  public init(deviceID: AppMetricaIdentifiers.DeviceID? = nil, deviceHashID: AppMetricaIdentifiers.DeviceIDHash? = nil, appMetricaUUID: AppMetricaIdentifiers.AppMetricaUUID)
+  public var isValid: Swift.Bool {
+    get
+  }
+  public static func == (a: AppMetricaIdentifiers.Identifiers, b: AppMetricaIdentifiers.Identifiers) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+#if compiler(>=5.3) && $NoncopyableGenerics
+extension Swift.Result {
+  public var value: Success? {
+    get
+  }
+  public var error: Failure? {
+    get
+  }
+}
+#else
+extension Swift.Result {
+  public var value: Success? {
+    get
+  }
+  public var error: Failure? {
+    get
+  }
+}
+#endif

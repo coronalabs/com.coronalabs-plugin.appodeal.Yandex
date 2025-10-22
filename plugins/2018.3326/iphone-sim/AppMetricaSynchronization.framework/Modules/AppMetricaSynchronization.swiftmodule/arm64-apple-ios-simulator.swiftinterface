@@ -1,0 +1,54 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name AppMetricaSynchronization
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import AppMetricaLogSwift
+@_exported import AppMetricaSynchronization
+import Darwin
+import Foundation
+import Swift
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public enum FileLockError : Swift.Error {
+  case system(code: Swift.Int32)
+}
+@_hasMissingDesignatedInitializers final public class FileLock {
+  final public let filePath: Swift.String
+  @objc deinit
+  final public func lockExclusive()
+  final public func lockShared()
+  final public func unlock()
+  final public func tryLockExculusive() -> Swift.Bool
+  final public func tryLockShared() -> Swift.Bool
+  final public func withExclusiveLock(_ closure: () throws -> ()) rethrows
+  final public func withSharedLock(_ closure: () throws -> ()) rethrows
+}
+public struct FileLockFactory {
+  public let filePath: Swift.String
+  public init(filePath: Swift.String)
+  public func open() throws -> AppMetricaSynchronization.FileLock
+}
+final public class UnfairLock {
+  @usableFromInline
+  final internal var _lock: Darwin.os_unfair_lock_s
+  public init()
+  @inline(__always) final public func lock()
+  @inline(__always) final public func unlock()
+  @inline(__always) final public func withLock<T>(closure: () throws -> T) rethrows -> T
+  @objc deinit
+}
+final public class UnfairLocker<T> {
+  final public var rawValue: T
+  final public let lock: AppMetricaSynchronization.UnfairLock
+  public init(value: T)
+  final public var value: T {
+    get
+    set
+  }
+  @discardableResult
+  final public func updateValue(closure: (inout T) throws -> ()) rethrows -> T
+  @discardableResult
+  final public func updateAndReturn<N>(closure: (inout T) throws -> N) rethrows -> N
+  @objc deinit
+}
