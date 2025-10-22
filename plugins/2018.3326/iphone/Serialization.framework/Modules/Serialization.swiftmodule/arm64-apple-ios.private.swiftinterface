@@ -1,0 +1,385 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios13.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name Serialization
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import CoreFoundation
+import CoreGraphics
+import Foundation
+@_exported import Serialization
+import Swift
+import VGSL
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public protocol Deserializable {
+  init(dictionary: [Swift.String : Any]) throws
+}
+extension Serialization.Deserializable {
+  public init(JSONString: Swift.String) throws
+  public init(JSONData: Foundation.Data) throws
+}
+@frozen indirect public enum DeserializationError : Swift.Error, Swift.CustomStringConvertible {
+  case generic
+  case nonUTF8String(string: Swift.String)
+  case invalidJSONData(data: Foundation.Data)
+  case missingType(representation: [Swift.String : Any])
+  case unknownType(type: Swift.String)
+  case invalidFieldRepresentation(field: Swift.String, representation: Any?)
+  case typeMismatch(expected: Swift.String, representation: Any)
+  case invalidValue(result: Any?, value: Any?)
+  case requiredFieldIsMissing(field: Swift.String)
+  case nestedObjectError(field: Swift.String, error: Serialization.DeserializationError)
+  case noData
+  case composite(error: Serialization.DeserializationError.DerivedError, causes: VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>)
+  case unexpectedError(message: Swift.String)
+  public var description: Swift.String {
+    get
+  }
+  public var errorMessage: Swift.String {
+    get
+  }
+  public var userInfo: [Swift.String : Swift.String] {
+    get
+  }
+  public var rootCauses: [Serialization.DeserializationError] {
+    get
+  }
+  public enum DerivedError : Swift.Error, Swift.CustomStringConvertible {
+    case invalidValue(result: Any?, from: Any?)
+    public var description: Swift.String {
+      get
+    }
+  }
+}
+@frozen indirect public enum DeserializationResult<T> {
+  case success(T)
+  case partialSuccess(T, warnings: VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>)
+  case failure(VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>)
+  case noValue
+}
+extension Serialization.DeserializationResult {
+  public var value: T? {
+    get
+  }
+  public var warnings: VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>? {
+    get
+  }
+  public var errors: VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>? {
+    get
+  }
+  public var errorsOrWarnings: VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>? {
+    get
+  }
+  public func unwrap() throws -> T
+  public func merged(with other: () -> Serialization.DeserializationResult<T>?) -> Serialization.DeserializationResult<T>
+  public func merged(with other: Serialization.DeserializationResult<T>?) -> Serialization.DeserializationResult<T>
+}
+public func mergeErrors(_ errors: VGSLFundamentals.NonEmptyArray<Serialization.DeserializationError>?...) -> [Serialization.DeserializationError]
+@usableFromInline
+internal func invalidFieldErrorForKey(_ key: [some Any], element: Swift.Int? = nil, representation: (some Any)?) -> Serialization.DeserializationError
+@usableFromInline
+internal func getResult<U>(_ block: () throws -> U) -> Serialization.DeserializationResult<U>
+extension Swift.Dictionary where Key == Swift.String {
+  @usableFromInline
+  internal func enclosedDictForKeySequence(_ keys: [Key]) throws -> Swift.Dictionary<Key, Value>
+}
+extension Swift.Dictionary where Key == Swift.String {
+  @usableFromInline
+  internal func getField<T, U>(_ key: [Key], transform: (T) throws -> U, validator: Serialization.AnyValueValidator<U>?) throws -> U where U : Swift.Sendable
+  @usableFromInline
+  internal func getArray<T, U>(_ key: [Key], transform: (T) throws -> U, validator: Serialization.AnyArrayValueValidator<U>?) throws -> [U] where U : Swift.Sendable
+  @usableFromInline
+  internal func getArray<T, U>(_ key: [Key], transform: (T) throws -> U, validator: Serialization.AnyArrayValueValidator<U>?) -> Serialization.DeserializationResult<[U]> where U : Swift.Sendable
+  @usableFromInline
+  internal func getArray<T, U>(_ key: [Key], transform: (T) -> Serialization.DeserializationResult<U>, validator: Serialization.AnyArrayValueValidator<U>?) -> Serialization.DeserializationResult<[U]> where U : Swift.Sendable
+}
+extension Swift.Dictionary where Key == Swift.String {
+  @usableFromInline
+  internal func getOptionalField<T, U>(_ key: [Key], transform: (T) throws -> U, validator: Serialization.AnyValueValidator<U>?) throws -> U? where U : Swift.Sendable
+  @usableFromInline
+  internal func getOptionalArray<T, U>(_ key: [Key], transform: (T) throws -> U, validator: Serialization.AnyArrayValueValidator<U>?) throws -> [U]? where U : Swift.Sendable
+}
+extension Swift.Dictionary where Key == Swift.String {
+  @usableFromInline
+  internal func getField<T, U>(_ key: [Key], transform: (T) -> U?, validator: Serialization.AnyValueValidator<U>?) throws -> U where U : Swift.Sendable
+  @usableFromInline
+  internal func getArray<T, U>(_ key: [Key], transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>?) throws -> [U] where U : Swift.Sendable
+  @usableFromInline
+  internal func getArray<T, U>(_ key: [Key], transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>?) -> Serialization.DeserializationResult<[U]> where U : Swift.Sendable
+  @usableFromInline
+  internal func getOptionalField<T, U>(_ key: [Key], transform: (T) -> U?, validator: Serialization.AnyValueValidator<U>?) throws -> U? where U : Swift.Sendable
+  @usableFromInline
+  internal func getOptionalArray<T, U>(_ key: [Key], transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>?) throws -> [U]? where U : Swift.Sendable
+}
+extension Swift.Dictionary where Key == Swift.String {
+  @inlinable public func getField<T>(_ key: Key..., validator: Serialization.AnyValueValidator<T>? = nil) throws -> T where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+    try getField(key, transform: { $0 as T }, validator: validator)
+  }
+  @inlinable public func getField<T>(_ key: Key..., validator: Serialization.AnyValueValidator<T>? = nil) throws -> T where T : Swift.RawRepresentable, T : Swift.Sendable {
+    try getField(key, transform: T.init(rawValue:), validator: validator)
+  }
+  @inlinable public func getField<T>(_ key: Key..., validator: Serialization.AnyValueValidator<T>? = nil) throws -> T where T : Serialization.Deserializable, T : Swift.Sendable {
+    try getField(
+      key,
+      transform: { (dict: Self) in try T(dictionary: dict) },
+      validator: validator
+    )
+  }
+  @inlinable public func getArray(_ key: Key..., validator: Serialization.AnyArrayValueValidator<Any>? = nil) throws -> [Any] {
+    try getArray(key, transform: { (value: Any) throws -> Any in value }, validator: validator)
+  }
+  @inlinable public func getArray(_ key: Key..., validator: Serialization.AnyArrayValueValidator<Any>? = nil) -> Serialization.DeserializationResult<[Any]> {
+    getArray(key, transform: { .success($0) }, validator: validator)
+  }
+  @inlinable public func getArray<T, U>(_ key: Key..., transform: (T) -> Serialization.DeserializationResult<U>, validator: Serialization.AnyArrayValueValidator<U>? = nil) -> Serialization.DeserializationResult<[U]> where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+    getArray(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getArray<T, U>(_ key: Key..., transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>? = nil) throws -> [U] where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+    try getArray(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getArray<T, U>(_ key: Key..., transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>? = nil) -> Serialization.DeserializationResult<[U]> where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+    getArray(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) throws -> [T] where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+    try getArray(
+      key,
+      transform: { (obj: Any) -> T? in obj as? T },
+      validator: validator
+    )
+  }
+  @inlinable public func getArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) -> Serialization.DeserializationResult<[T]> where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+    getArray(
+      key, transform: { (obj: Any) -> T? in obj as? T },
+      validator: validator
+    )
+  }
+  @inlinable public func getArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) throws -> [T] where T : Serialization.Deserializable, T : Swift.Sendable {
+    try getArray(
+      key,
+      transform: { (dict: Self) in try T(dictionary: dict) },
+      validator: validator
+    )
+  }
+  @inlinable public func getArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) -> Serialization.DeserializationResult<[T]> where T : Serialization.Deserializable, T : Swift.Sendable {
+    getArray(
+      key,
+      transform: { (dict: Self) in try T(dictionary: dict) },
+      validator: validator
+    )
+  }
+  @inlinable public func getField<T, U>(_ key: Key..., transform: (T) throws -> U, validator: Serialization.AnyValueValidator<U>? = nil) throws -> U where U : Swift.Sendable {
+    try getField(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getField<T, U>(_ key: Key..., transform: (T) -> U?, validator: Serialization.AnyValueValidator<U>? = nil) throws -> U where U : Swift.Sendable {
+    try getField(key, transform: transform, validator: validator)
+  }
+  public func getURL(_ key: Key..., validator: Serialization.AnyValueValidator<Foundation.URL>? = nil) throws -> Foundation.URL
+  public func getObjCCompatibleBool(_ key: Key...) -> Swift.Bool?
+}
+extension Swift.Dictionary where Key == Swift.String {
+  public func getOptionalField(_ key: Key..., validator: Serialization.AnyValueValidator<CoreFoundation.CFString>? = nil) throws -> CoreFoundation.CFString?
+  @inlinable public func getOptionalField<T>(_ key: Key..., validator: Serialization.AnyValueValidator<T>? = nil) throws -> T? where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+    try getOptionalField(key, transform: { $0 as T }, validator: validator)
+  }
+  @inlinable public func getOptionalField<T>(_ key: Key..., validator: Serialization.AnyValueValidator<T>? = nil) throws -> T? where T : Swift.RawRepresentable, T : Swift.Sendable {
+    try getOptionalField(key, transform: T.init(rawValue:), validator: validator)
+  }
+  @inlinable public func getOptionalField<T, U>(_ key: Key..., transform: (T) -> U?, validator: Serialization.AnyValueValidator<U>? = nil) throws -> U? where U : Swift.Sendable {
+    try getOptionalField(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getOptionalField<T, U>(_ key: Key..., transform: (T) throws -> U, validator: Serialization.AnyValueValidator<U>? = nil) throws -> U? where U : Swift.Sendable {
+    try getOptionalField(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getOptionalField<T>(_ key: Key..., validator: Serialization.AnyValueValidator<T>? = nil) throws -> T? where T : Serialization.Deserializable, T : Swift.Sendable {
+    try getOptionalField(
+      key,
+      transform: { (dict: Self) in try T(dictionary: dict) },
+      validator: validator
+    )
+  }
+  @inlinable public func getOptionalArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) throws -> [T]? where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+    try getOptionalArray(
+      key,
+      transform: { (obj: Any) -> T? in obj as? T },
+      validator: validator
+    )
+  }
+  @inlinable public func getOptionalArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) throws -> [T]? where T : Swift.RawRepresentable, T : Swift.Sendable {
+    try getOptionalArray(
+      key,
+      transform: { (obj: Any) -> T? in (obj as? T.RawValue).flatMap { T(rawValue: $0) } },
+      validator: validator
+    )
+  }
+  @inlinable public func getOptionalArray<T, U>(_ key: Key..., transform: (T) throws -> U, validator: Serialization.AnyArrayValueValidator<U>? = nil) throws -> [U]? where U : Swift.Sendable {
+    try getOptionalArray(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getOptionalArray<T, U>(_ key: Key..., transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>? = nil) throws -> [U]? where U : Swift.Sendable {
+    try getOptionalArray(key, transform: transform, validator: validator)
+  }
+  @inlinable public func getOptionalArray<T>(_ key: Key..., validator: Serialization.AnyArrayValueValidator<T>? = nil) throws -> [T]? where T : Serialization.Deserializable, T : Swift.Sendable {
+    try getOptionalArray(
+      key, transform: { (dict: Self) in try T(dictionary: dict) },
+      validator: validator
+    )
+  }
+}
+public protocol ValidSerializationValue {
+}
+extension Swift.Int : Serialization.ValidSerializationValue {
+}
+extension Swift.Int64 : Serialization.ValidSerializationValue {
+}
+extension Swift.UInt : Serialization.ValidSerializationValue {
+}
+extension Swift.UInt32 : Serialization.ValidSerializationValue {
+}
+extension Swift.Float : Serialization.ValidSerializationValue {
+}
+extension Swift.String : Serialization.ValidSerializationValue {
+}
+extension Swift.Array : Serialization.ValidSerializationValue {
+}
+extension Swift.Dictionary : Serialization.ValidSerializationValue {
+}
+extension CoreFoundation.CGFloat : Serialization.ValidSerializationValue {
+}
+extension Swift.Double : Serialization.ValidSerializationValue {
+}
+extension Swift.Bool : Serialization.ValidSerializationValue {
+}
+extension Foundation.NSNumber : Serialization.ValidSerializationValue {
+}
+extension Foundation.NSString : Serialization.ValidSerializationValue {
+}
+extension Foundation.NSDictionary : Serialization.ValidSerializationValue {
+}
+extension Foundation.NSArray : Serialization.ValidSerializationValue {
+}
+public protocol Serializable {
+  func toDictionary() -> [Swift.String : any Serialization.ValidSerializationValue]
+}
+extension VGSLFundamentals.SettingProperty where T : Serialization.Deserializable, T : Serialization.Serializable {
+  @usableFromInline
+  internal static func serializableStorage(_ storage: any VGSLFundamentals.KeyValueStorage, key: Swift.String) -> VGSLFundamentals.Property<T?>
+}
+extension VGSLFundamentals.KeyValueStorage {
+  @inlinable public func makeField<T>(key: Swift.String) -> VGSLFundamentals.Property<T?> where T : Serialization.Deserializable, T : Serialization.Serializable {
+    SettingProperty.serializableStorage(self, key: key)
+  }
+  @inlinable public func makeField<T>(key: Swift.String, default: T) -> VGSLFundamentals.Property<T> where T : Serialization.Deserializable, T : Serialization.Serializable {
+    SettingProperty.serializableStorage(self, key: key).withDefault(`default`)
+  }
+}
+extension Foundation.URL {
+  public static func makeFromNonEncodedString(_ string: Swift.String) -> Foundation.URL?
+}
+public class AnyValueValidator<T> : @unchecked Swift.Sendable where T : Swift.Sendable {
+  public init(_ isValid: @escaping (T) -> Swift.Bool)
+  public func isValid(_ value: T) -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers final public class AnyArrayValueValidator<T> : Serialization.AnyValueValidator<[T]>, @unchecked Swift.Sendable where T : Swift.Sendable {
+  override public init(_ isValid: @escaping ([T]) -> Swift.Bool)
+  @objc deinit
+}
+public func makeCFStringValidator(minLength: Swift.Int) -> Serialization.AnyValueValidator<CoreFoundation.CFString>
+public func makeStringValidator(minLength: Swift.Int = 0, regex: Swift.String? = nil) -> Serialization.AnyValueValidator<Swift.String>
+public func makeURLValidator(schemes: [Swift.String]) -> Serialization.AnyValueValidator<Foundation.URL>
+@inlinable public func makeValueValidator<T>(valueValidator: @escaping (T) -> Swift.Bool) -> Serialization.AnyValueValidator<T> where T : Swift.Sendable {
+  AnyValueValidator(valueValidator)
+}
+@inlinable public func makeNoOpValueValidator<T>() -> Serialization.AnyValueValidator<T> where T : Swift.Sendable {
+  AnyValueValidator { _ in true }
+}
+@inlinable public func makeArrayValidator<T>(minItems: Swift.Int) -> Serialization.AnyArrayValueValidator<T> where T : Swift.Sendable {
+  AnyArrayValueValidator { $0.count >= minItems }
+}
+@inlinable public func deserialize<T>(_ value: Any, validator: Serialization.AnyValueValidator<T>? = nil) -> Serialization.DeserializationResult<T> where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+  deserialize(value, transform: { $0 }, validator: validator)
+}
+@inlinable public func deserialize<T>(_ value: Any, validator: Serialization.AnyValueValidator<T>? = nil) -> Serialization.DeserializationResult<T> where T : Swift.RawRepresentable, T : Swift.Sendable, T.RawValue : Serialization.ValidSerializationValue {
+  deserialize(value, transform: T.init, validator: validator)
+}
+@inlinable public func deserialize<T, U>(_ value: Any, transform: (T) -> U?, validator: Serialization.AnyValueValidator<U>? = nil) -> Serialization.DeserializationResult<U> where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+  let transformWithResult: (T) -> DeserializationResult<U> = {
+    guard let transformed = transform($0) else {
+      return .failure(NonEmptyArray(.invalidValue(result: nil, value: value)))
+    }
+    return .success(transformed)
+  }
+  return deserialize(value, transform: transformWithResult, validator: validator)
+}
+@inlinable public func deserialize<T, U>(_ value: Any, transform: (T) -> Serialization.DeserializationResult<U>, validator: Serialization.AnyValueValidator<U>? = nil) -> Serialization.DeserializationResult<U> where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+  guard let typedValue = value as? T else {
+    return .failure(NonEmptyArray(.typeMismatch(
+      expected: String(describing: T.self),
+      representation: value
+    )))
+  }
+
+  let result = transform(typedValue)
+  guard let resultValue = result.value, validator?.isValid(resultValue) != false else {
+    if let resultErrors = result.errorsOrWarnings {
+      return .failure(NonEmptyArray(.composite(
+        error: .invalidValue(result: result.value, from: value),
+        causes: resultErrors
+      )))
+    }
+    return .failure(NonEmptyArray(.invalidValue(result: result.value, value: value)))
+  }
+  return result
+}
+@inlinable public func deserialize<T>(_ value: Any, validator: Serialization.AnyArrayValueValidator<T>? = nil) -> Serialization.DeserializationResult<[T]> where T : Serialization.ValidSerializationValue, T : Swift.Sendable {
+  deserialize(value, transform: { $0 } as ((T) -> T?), validator: validator)
+}
+@inlinable public func deserialize<T>(_ value: Any, validator: Serialization.AnyArrayValueValidator<T>? = nil) -> Serialization.DeserializationResult<[T]> where T : Swift.RawRepresentable, T : Swift.Sendable, T.RawValue : Serialization.ValidSerializationValue {
+  deserialize(value, transform: T.init, validator: validator)
+}
+@inlinable public func deserialize<T, U>(_ value: Any, transform: (T) -> U?, validator: Serialization.AnyArrayValueValidator<U>? = nil) -> Serialization.DeserializationResult<[U]> where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+  let transformWithResult: (T) -> DeserializationResult<U> = {
+    guard let transformed = transform($0) else {
+      return .failure(NonEmptyArray(.invalidValue(result: nil, value: value)))
+    }
+    return .success(transformed)
+  }
+  return deserialize(value, transform: transformWithResult, validator: validator)
+}
+@inlinable public func deserialize<T, U>(_ value: Any, transform: (T) -> Serialization.DeserializationResult<U>, validator: Serialization.AnyArrayValueValidator<U>? = nil) -> Serialization.DeserializationResult<[U]> where T : Serialization.ValidSerializationValue, U : Swift.Sendable {
+  guard let resultBeforeTransform = (value as? [T]) else {
+    return .failure(NonEmptyArray(.typeMismatch(
+      expected: String(describing: [T].self),
+      representation: value
+    )))
+  }
+
+  var result: [U] = []
+  var errors: [DeserializationError] = []
+  result.reserveCapacity(resultBeforeTransform.count)
+
+  for index in resultBeforeTransform.indices {
+    let transformResult = transform(resultBeforeTransform[index])
+    if let resultValue = transformResult.value {
+      result.append(resultValue)
+    }
+    errors.append(
+      contentsOf: (transformResult.errorsOrWarnings?.asArray() ?? [])
+        .map { .nestedObjectError(field: "\(index)", error: $0) }
+    )
+  }
+
+  guard validator?.isValid(result) != false else {
+    if let errors = NonEmptyArray(errors) {
+      return .failure(NonEmptyArray(.composite(
+        error: .invalidValue(result: result, from: value),
+        causes: errors
+      )))
+    } else {
+      return .failure(NonEmptyArray(.invalidValue(result: result, value: value)))
+    }
+  }
+
+  return errors.isEmpty
+    ? .success(result)
+    : .partialSuccess(result, warnings: NonEmptyArray(errors)!)
+}
